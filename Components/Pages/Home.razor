@@ -1,7 +1,118 @@
 ﻿@page "/"
+@using SupportWebApp.Models
+@using SupportWebApp.Services
+@inject ICosmosDbService CosmosDbService
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Forside - Support Portal</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="p-5 mb-4 bg-light rounded-3 shadow-sm border">
+    <div class="container-fluid py-3">
+        <h1 class="display-5 fw-bold text-primary">Velkommen til Support Portalen</h1>
+        <p class="col-md-9 fs-5 text-muted">
+            Her kan du oprette nye supporthenvendelser vedrørende produkter, reservedele og rådgivning, samt følge med i eksisterende sager gemt direkte i skyen.
+        </p>
+        <div class="d-flex gap-3 mt-4">
+            <a href="create-support" class="btn btn-primary btn-lg px-4">
+                <i class="bi bi-plus-circle me-2"></i> Opret Henvendelse
+            </a>
+            <a href="support-list" class="btn btn-outline-secondary btn-lg px-4">
+                <i class="bi bi-list-stars me-2"></i> Se Alle Henvendelser
+            </a>
+        </div>
+    </div>
+</div>
 
-Welcome to your new app.
+<div class="row g-4 my-2">
+    <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body text-center p-4">
+                <div class="fs-1 text-primary mb-3">
+                    <i class="bi bi-headset"></i>
+                </div>
+                <h5 class="card-title fw-bold">Hurtig Support</h5>
+                <p class="card-text text-muted">
+                    Vælg mellem vores 6 specifikke kategorier for at få din henvendelse routed direkte til den rette afdeling.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body text-center p-4">
+                <div class="fs-1 text-success mb-3">
+                    <i class="bi bi-cloud-check"></i>
+                </div>
+                <h5 class="card-title fw-bold">Azure Cosmos DB Integration</h5>
+                <p class="card-text text-muted">
+                    Alle henvendelser gemmes og skalerer automatisk i skyen med høj tilgængelighed og lynsnart opslag.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body text-center p-4">
+                <div class="fs-1 text-warning mb-3">
+                    <i class="bi bi-shield-lock"></i>
+                </div>
+                <h5 class="card-title fw-bold">Sikker Håndtering</h5>
+                <p class="card-text text-muted">
+                    Bygget efter best practices med .NET User Secrets og adskilte miljø-konfigurationer.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-5 p-4 border rounded bg-white shadow-sm">
+    <h4 class="fw-bold mb-3"><i class="bi bi-speedometer2 text-primary me-2"></i> Systemstatus</h4>
+    <div class="row text-center g-3">
+        <div class="col-md-6">
+            <div class="p-3 bg-light rounded">
+                <span class="d-block text-muted small">Registrerede Henvendelser i alt</span>
+                <span class="fs-3 fw-bold text-dark">
+                    @if (isLoading)
+                    {
+                        <span class="spinner-border spinner-border-sm" role="status"></span>
+                    }
+                    else
+                    {
+                        @ticketCount
+                    }
+                </span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="p-3 bg-light rounded">
+                <span class="d-block text-muted small">Database Forbindelse</span>
+                <span class="fs-3 fw-bold text-success">
+                    <i class="bi bi-check-circle-fill me-1"></i> Aktiv
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private int ticketCount = 0;
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var messages = await CosmosDbService.GetSupportMessagesAsync();
+            ticketCount = messages?.Count ?? 0;
+        }
+        catch
+        {
+            ticketCount = 0;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

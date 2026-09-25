@@ -15,9 +15,9 @@ Formålet med dette projekt er at udvikle en skalerbar, sikker og moderne suppor
 
 ---
 
-## Opsætning af Azure Cosmos DB (Læringsguide M4.03)
+## Opsætning af Azure Cosmos DB 
 
-Følgende Azure CLI-kommandoer opretter ressourcerne i Azure i overensstemmelse med guiden *M4.03 - Azure CosmosDB*. 
+Følgende Azure CLI-kommandoer opretter ressourcerne i Azure
 
 > **Bemærk:** Kommandoerne benytter Bash-variabler og tilføjer `--enable-free-tier true` for at aktivere Azure-for-students rabatten.
 
@@ -57,13 +57,12 @@ az cosmosdb sql database create \
 ```bash
 export CONTAINER="ibassupport"
 
-# På Windows benyttes dobbelt '//category'
 az cosmosdb sql container create \
   --account-name "$DBACCOUNT" \
   --resource-group "$RESGRP" \
   --database-name "$DATABASE" \
   --name "$CONTAINER" \
-  --partition-key-path "//category"
+  --partition-key-path "/category"
 ```
 
 ---
@@ -83,18 +82,17 @@ dotnet user-secrets set "CosmosDb:ConnectionString" "DIN_AZURE_COSMOSDB_CONNECTI
 
 ## Status & Næste Trin
 
-### Hvad vi nåede (Status):
+### Hvad jeg nåede (Status):
 * [x] **Aktivitet 1:** Opsætning af Azure Cosmos DB konto, database (`IBasSupportDB`) og container (`ibassupport`) med partition key `/category`.
 * [x] **Aktivitet 1:** Beskyttelse af Connection String via .NET User Secrets.
 * [x] **Aktivitet 2:** Oprettelse af C# datamodellen `SupportMessage.cs` med GUID som ID og JSON-annotations.
-* [x] **Aktivitet 2:** Blazor-formular (`CreateSupport.razor`) med validering og gem-funktion mod Cosmos DB.
+* [x] **Aktivitet 3:** Blazor-formular (`CreateSupport.razor`) med validering og gem-funktion mod Cosmos DB.
 * [x] **Aktivitet 3:** Oversigtsside (`SupportList.razor`) der henter og viser alle supporthenvendelser fra Cosmos DB.
 * [x] **Aktivitet 4:** Opsætning af `.gitignore` samt dokumentation og status i `README.md`.
 
-### Hvad der mangler i forhold til opgavesættet:
-* *Ingen* – Alle krævede aktiviteter og delopgaver i opgavesættet er gennemført og testet.
+### Hvad der mangler i forhold til afleveringen:
+* *Intet* – Alle krævede aktiviteter og delopgaver i opgavesættet er gennemført og testet.
 
-### Enkle næste trin (Mulige udvidelser):
+### næste trin (Mulige udvidelser):
 1. **Søgning og filtrering:** Tilføje en simpel dropdown på oversigtssiden (`SupportList.razor`), så man kan filtrere listen på en bestemt kategori.
-2. **Visuel feltvalidering:** Tilføje `<ValidationMessage>` i formularen, så der vises en rød fejltekst ved manglende udfyldelse af felter.
-3. **Statusfelt på henvendelse:** Tilføje en status-egenskab (f.eks. "Modtaget", "Under behandling", "Afsluttet") på hver supportbesked.
+2. **Statusfelt på henvendelse:** Tilføje en status-egenskab (f.eks. "Modtaget", "Under behandling", "Afsluttet") på hver supportbesked.
