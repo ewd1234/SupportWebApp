@@ -1,0 +1,101 @@
+@page "/create-support"
+@rendermode InteractiveServer
+@using SupportWebApp.Models
+@using SupportWebApp.Services
+@inject ICosmosDbService CosmosDbService
+
+<PageTitle>Opret Supporthenvendelse</PageTitle>
+
+<h3>Opret Supporthenvendelse</h3>
+
+@if (isSuccess)
+{
+    <div class="alert alert-success mt-3" role="alert">
+        Din supporthenvendelse er blev gemt i CosmosDB!
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger mt-3" role="alert">
+        @errorMessage
+    </div>
+}
+
+<EditForm Model="@supportMessage" OnValidSubmit="HandleValidSubmit" FormName="create-support-form">
+    <DataAnnotationsValidator />
+    <ValidationSummary class="text-danger" />
+
+    <div class="mb-3">
+        <label for="name" class="form-label">Navn</label>
+        <InputText id="name" class="form-control" @bind-Value="supportMessage.Name" />
+        <ValidationMessage For="@(() => supportMessage.Name)" class="text-danger" />
+    </div>
+
+    <div class="mb-3">
+        <label for="email" class="form-label">E-mail</label>
+        <InputText id="email" class="form-control" @bind-Value="supportMessage.Email" />
+        <ValidationMessage For="@(() => supportMessage.Email)" class="text-danger" />
+    </div>
+
+    <div class="mb-3">
+        <label for="phone" class="form-label">Telefonnummer</label>
+        <InputText id="phone" class="form-control" @bind-Value="supportMessage.Phone" />
+        <ValidationMessage For="@(() => supportMessage.Phone)" class="text-danger" />
+    </div>
+
+    <div class="mb-3">
+        <label for="category" class="form-label">Kategori</label>
+        <InputSelect id="category" class="form-select" @bind-Value="supportMessage.Category">
+            <option value="">-- Vælg kategori --</option>
+            <option value="Forhandler">Forhandler</option>
+            <option value="Reservedele">Reservedele</option>
+            <option value="Købsrådgivning">Købsrådgivning</option>
+            <option value="Produktforslag">Produktforslag</option>
+            <option value="Katalogbestilling">Katalogbestilling</option>
+            <option value="Øvrigt">Øvrigt</option>
+        </InputSelect>
+        <ValidationMessage For="@(() => supportMessage.Category)" class="text-danger" />
+    </div>
+
+    <div class="mb-3">
+        <label for="description" class="form-label">Beskrivelse</label>
+        <InputTextArea id="description" class="form-control" rows="4" @bind-Value="supportMessage.Description" />
+        <ValidationMessage For="@(() => supportMessage.Description)" class="text-danger" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Send henvendelse</button>
+</EditForm>
+
+@code {
+    [SupplyParameterFromForm]
+    private SupportMessage supportMessage { get; set; } = new();
+
+    private bool isSuccess = false;
+    private string errorMessage = string.Empty;
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            isSuccess = false;
+            errorMessage = string.Empty;
+
+            // Ekstra sikkerhedsnet: Hvis Category af en grund stadig er tom, 
+            // falder den tilbage på "Øvrigt" frem for at smide en null-fejl
+            if (string.IsNullOrWhiteSpace(supportMessage.Category))
+            {
+                supportMessage.Category = "Øvrigt";
+            }
+
+            await CosmosDbService.AddSupportMessageAsync(supportMessage);
+
+            isSuccess = true;
+            supportMessage = new(); // Nulstil formularen
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Der opstod en fejl ved gemning: {ex.Message}";
+        }
+    }
+}

@@ -1,4 +1,5 @@
 using SupportWebApp.Components;
+using SupportWebApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,21 +7,29 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+// --- COSMOS DB REGISTRERING ---
+var cosmosDbConfig = builder.Configuration.GetSection("CosmosDb");
+var connectionString = cosmosDbConfig["ConnectionString"];
+var databaseName = cosmosDbConfig["DatabaseName"];
+var containerName = cosmosDbConfig["ContainerName"];
+
+builder.Services.AddSingleton<ICosmosDbService>(sp => 
+    new CosmosDbService(connectionString!, databaseName!, containerName!));
+// ------------------------------
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
-app.UseHttpsRedirection();
 
+app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseAntiforgery();
 
-app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
