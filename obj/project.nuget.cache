@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "lmXwhL+BjEs=",
+  "success": true,
+  "projectFilePath": "/home/jacob/3Semester/cloud-computing/3Sem-afl-Ibas/SupportWebApp/SupportWebApp.csproj",
+  "expectedPackageFiles": [
+    "/home/jacob/.nuget/packages/microsoft.aspnetcore.app.internal.assets/10.0.12/microsoft.aspnetcore.app.internal.assets.10.0.12.nupkg.sha512"
+  ],
+  "logs": []
+}
