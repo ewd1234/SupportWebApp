@@ -30,7 +30,7 @@ az provider register --namespace Microsoft.DocumentDB --wait
 ```bash
 export RESGRP="IBasSupportRG"
 
-az group create --name "$RESGRP" --location westeurope
+az group create --name "$RESGRP" --location "(ønskede region)"
 ```
 
 ### 3. Opret CosmosDB Konto (Trin B)
