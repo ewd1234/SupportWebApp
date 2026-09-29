@@ -81,8 +81,6 @@
             isSuccess = false;
             errorMessage = string.Empty;
 
-            // Ekstra sikkerhedsnet: Hvis Category af en grund stadig er tom, 
-            // falder den tilbage på "Øvrigt" frem for at smide en null-fejl
             if (string.IsNullOrWhiteSpace(supportMessage.Category))
             {
                 supportMessage.Category = "Øvrigt";

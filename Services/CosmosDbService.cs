@@ -16,7 +16,6 @@ namespace SupportWebApp.Services
 
         public async Task AddSupportMessageAsync(SupportMessage message)
         {
-            // Hvis Category af en grund er null eller tom, sætter vi en fallback-kategori
             if (string.IsNullOrWhiteSpace(message.Category))
             {
                 message.Category = "Øvrigt";
