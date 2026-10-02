@@ -8,7 +8,7 @@
 <PageTitle>Supporthenvendelser</PageTitle>
 
 <h3>Modtagne Supporthenvendelser</h3>
-<h4>V2</h4>
+<h4>V3</h4>
 
 <!-- AI -->
 <!-- Dropdown til filtrering -->
@@ -37,6 +37,10 @@ else if (supportMessages == null || !supportMessages.Any())
 }
 else
 {
+    <h2 class="col-auto col-form-label fw-bold mt-3">
+        Antal henvendelser i denne kategori: @supportMessages.Count
+    </h2>
+
     <div class="table-responsive">
         <table class="table table-striped table-hover mt-3">
             <thead class="table-dark">
