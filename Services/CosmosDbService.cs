@@ -37,5 +37,26 @@ namespace SupportWebApp.Services
 
             return results;
         }
+//Lærer
+        public async Task<List<SupportMessage>> GetSupportMsgByCategoryAsync(string category)
+        {
+            var queryDef = new QueryDefinition(
+                "SELECT * FROM c WHERE c.category = @category ORDER BY c.oprettet DESC")
+                .WithParameter("@category", category);
+
+            var query = _container.GetItemQueryIterator<SupportMessage>(
+                queryDef,
+                requestOptions: new QueryRequestOptions { PartitionKey = new PartitionKey(category) }
+            );
+
+            var results = new List<SupportMessage>();
+            while (query.HasMoreResults)
+            {
+                var response = await query.ReadNextAsync();
+                results.AddRange(response);
+            }
+
+            return results;
+        }
     }
 }

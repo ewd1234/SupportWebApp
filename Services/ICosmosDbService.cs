@@ -7,5 +7,6 @@ namespace SupportWebApp.Services
     {
         Task AddSupportMessageAsync(SupportMessage message);
         Task<List<SupportMessage>> GetSupportMessagesAsync();
+        Task<List<SupportMessage>> GetSupportMsgByCategoryAsync(string category);
     }
 }

@@ -8,6 +8,24 @@
 <PageTitle>Supporthenvendelser</PageTitle>
 
 <h3>Modtagne Supporthenvendelser</h3>
+<h4>V2</h4>
+
+<!-- AI -->
+<!-- Dropdown til filtrering -->
+<div class="mb-4 row align-items-center">
+    <label for="categorySelect" class="col-auto col-form-label fw-bold">Filtrér efter kategori:</label>
+    <div class="col-auto">
+        <select id="categorySelect" class="form-select" @onchange="OnCategoryChanged">
+            <option value="Alle">Alle</option>
+            <option value="Forhandler">Forhandler</option>
+            <option value="Reservedele">Reservedele</option>
+            <option value="Købsrådgivning">Købsrådgivning</option>
+            <option value="Produktforslag">Produktforslag</option>
+            <option value="Katalogbestilling">Katalogbestilling</option>
+            <option value="Øvrigt">Øvrigt</option>
+        </select>
+    </div>
+</div>
 
 @if (isLoading)
 {
@@ -15,7 +33,7 @@
 }
 else if (supportMessages == null || !supportMessages.Any())
 {
-    <div class="alert alert-info">Der er endnu ingen supporthenvendelser registreret.</div>
+    <div class="alert alert-info">Der er endnu ingen supporthenvendelser registreret i denne kategori.</div>
 }
 else
 {
@@ -51,12 +69,32 @@ else
 @code {
     private List<SupportMessage>? supportMessages;
     private bool isLoading = true;
+    private string selectedCategory = "Alle";
 
     protected override async Task OnInitializedAsync()
     {
+        await LoadDataAsync();
+    }
+
+    private async Task OnCategoryChanged(ChangeEventArgs e)
+    {
+        selectedCategory = e.Value?.ToString() ?? "Alle";
+        await LoadDataAsync();
+    }
+//AI
+    private async Task LoadDataAsync()
+    {
+        isLoading = true;
         try
         {
-            supportMessages = await CosmosDbService.GetSupportMessagesAsync();
+            if (string.IsNullOrEmpty(selectedCategory) || selectedCategory == "Alle")
+            {
+                supportMessages = await CosmosDbService.GetSupportMessagesAsync();
+            }
+            else
+            {
+                supportMessages = await CosmosDbService.GetSupportMsgByCategoryAsync(selectedCategory);
+            }
         }
         catch (Exception ex)
         {
